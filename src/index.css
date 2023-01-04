@@ -1,0 +1,90 @@
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+h1 {
+  margin: 0 0 10px;
+  text-align: center;
+}
+
+.NewGmae {}
+
+.game {
+  width: 100%;
+  height: 100vh;
+  text-align: center;
+}
+.game-header {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+.game-score {
+  margin-right: 40px;
+}
+.game-time {
+  margin-left: 40px;
+}
+
+.game-board {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  height: 600px;
+  width: 600px;
+  margin: 0 auto;
+}
+.board-block {
+  width: 200px;
+  height: 200px;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+  background: none;
+  overflow: hidden;
+  padding: 0;
+  outline: 0;
+}
+
+.board-block:hover {
+  cursor: pointer;
+}
+
+.board-content {
+  height: 200px;
+  width: 200px;
+  opacity: 0;
+  display: block;
+  transition: opacity 300ms;
+  object-fit: cover;
+  object-position: center;
+  user-drag: none;
+  -webkit-user-drag: none;
+  user-select: none;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+}
+
+.board-content-ready {
+  opacity: 1;
+}
+
+.board-preload {
+  position: absolute;
+  left: -9999px;
+  top: -9999px;
+  opacity: 0;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+}
