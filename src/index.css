@@ -150,16 +150,15 @@ h1 {
 .score-items {
   background: #fff;
   color: #000;
-
 }
 .score-item {
   width: 500px;
   display: flex;
   justify-content: space-between;
-  padding: 5px;
   box-sizing: border-box;
 }
 
+.score-rank,
 .score-head {
   background: #ccc;
 }
@@ -181,15 +180,11 @@ h1 {
   cursor: pointer;
 }
 
-.score-rank {
-
-}
-.score-name {
-
-}
-.score-date {
-
-}
-.score-score {
-
+.score-rank,
+.score-value {
+  border-width: 0px 0px 1px 1px;
+  border-color: #ffc000;
+  border-style: solid;
+  padding: 5px;
+  width: 100%;
 }

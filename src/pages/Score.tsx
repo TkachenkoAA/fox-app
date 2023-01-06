@@ -1,13 +1,17 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import classNames from 'classnames';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { v4 as uuidv4 } from 'uuid';
+import { useLocation, useNavigate, useBeforeUnload } from 'react-router-dom';
 import { routePath } from '../routePath';
 
 type Player = {
+  id: string;
   name: string;
-  date: number;
+  date: string;
   score: number;
 }
+
+const monthMap = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
 export default function Score() {
   const navigate = useNavigate();
@@ -17,9 +21,11 @@ export default function Score() {
     const score = [] as Player[];
 
     if (state) {
+      const date = new Date();
       score.push({
+        id: uuidv4(),
         name: state.name,
-        date: Date.now(),
+        date: `${date.getFullYear()}, ${monthMap[date.getMonth()]} ${date.getDate()}`,
         score: state.score,
       });
     }
@@ -30,8 +36,13 @@ export default function Score() {
       score.push(...prevPlayers);
     }
 
-    return score.sort((a, b) => b.score - a.score);
+    return score.sort((a, b) => b.score - a.score)
   });
+
+  const replaceState = useCallback(() => {
+    console.log('replaceState !!!')
+    window.history.replaceState({}, document.title)
+  }, [])
 
   useEffect(() => {
     if (scoreBoard.length) {
@@ -39,34 +50,48 @@ export default function Score() {
     }
   }, [scoreBoard]);
 
-  useEffect(() => {
-    if (state) {
-      window.history.replaceState({}, document.title)
-    }
-  }, [state]);
+  useBeforeUnload(replaceState)
 
-  const navigateToWelcome = () => navigate(routePath.home);
-  const navigateToGame = () => navigate(routePath.game, {
-    state: {
-      name: state.name
+  const navigateToWelcome = () => {
+    if (state) {
+      navigate(routePath.home, {
+        state: {
+          name: state.name
+        }
+      });
+      return;
     }
-  });
+
+    navigate(routePath.home)
+  }
+
+  const navigateToGame = () => {
+    if (state) {
+      navigate(routePath.game, {
+        state: {
+          name: state.name
+        }
+      });
+      return;
+    }
+    navigate(routePath.home);
+  }
 
   return (
     <div className="score">
       <div className="score-items">
         <div className="score-item score-head">
-          <div className="score-rank">Rank</div>
-          <div className="score-name">Name</div>
-          <div className="score-date">Date</div>
-          <div className="score-score">Score</div>
+          <div className="score-value score-rank">Rank</div>
+          <div className="score-value">Name</div>
+          <div className="score-value">Date</div>
+          <div className="score-value">Score</div>
         </div>
         {scoreBoard.length ? scoreBoard.map((player, index) => (
-          <div className={classNames('score-item', { 'score-item-odd': index % 2 === 1 })}>
-            <div className="score-rank">{index}</div>
-            <div className="score-name">{player.name}</div>
-            <div className="score-date">{player.date}</div>
-            <div className="score-score">{player.score}</div>
+          <div key={player.id} className={classNames('score-item', { 'score-item-odd': index % 2 === 1 })}>
+            <div className="score-value score-rank">{index}</div>
+            <div className="score-value">{player.name}</div>
+            <div className="score-value">{player.date}</div>
+            <div className="score-value">{player.score}</div>
           </div>
         )) : null}
       </div>

@@ -3,7 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import GameBoard from '../features/game-board/GameBoard';
 import GameScore from '../features/game-board/GameScore';
 import GameTime from '../features/game-board/GameTime';
-import idsLoadImages from '../features/game-board/loadImages';
+import idsLoadImages from '../features/game-process/loadImages';
 import PreloadImages from '../features/game-board/PreloadImages';
 import { routePath } from '../routePath';
 

@@ -1,6 +1,6 @@
 import React from 'react';
 import ImageContainer from './ImageContainer';
-import { Image } from './types';
+import { Image } from '../../types';
 
 type GameBoardProps = {
   images?: Image[];
@@ -16,14 +16,11 @@ export default function GameBoard({ images, ready, onClick, onLoad }: GameBoardP
     );
   }
 
-  if (images.length > 9) {
-    debugger;
-  }
-
   return (
     <div className="game-board">
       {images.map((image) => (
         <ImageContainer
+          key={image.src}
           id={image.id}
           src={image.src}
           ready={ready}

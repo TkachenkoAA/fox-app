@@ -1,30 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { v4 as uuidv4 } from 'uuid';
-import { Image, Type } from './types';
-
-type DogImageRes = { message: string; };
-type CatImageRes = { file: string; };
-type FoxImageRes = { image: string; };
-
-
-const resToJson = (res: Response) => res.json();
-const getFoxImage = (res: FoxImageRes) => ({ id: uuidv4(), src: res.image, type: Type.fox });
-const getDogImage = (res: DogImageRes) => ({ id: uuidv4(), src: res.message, type: Type.dog });
-const getCatImage = (res: CatImageRes) => ({ id: uuidv4(), src: res.file, type: Type.cat });
-
-const defaultState = [...new Array(9).keys()] as number[];
-
-const dog = () => fetch('https://dog.ceo/api/breeds/image/random')
-  .then(resToJson)
-  .then(getDogImage);
-const cat = () => fetch('https://aws.random.cat/meow')
-  .then(resToJson)
-  .then(getCatImage);
-const fox = () => fetch('https://randomfox.ca/floof/')
-  .then(resToJson)
-  .then(getFoxImage);
-
-const getRandomFox = () => Math.floor(Math.random() * 9);
+import { Image, Type } from '../../types';
+import { fetchDog, fetchCat, fetchFox } from './fetchImageSources';
+import { defaultState, getRandomOnBoard, getRandomBoolean } from './utils';
 
 const shuffleArray = (array: Image[]) => {
   const newArr = ([] as Image[]).concat(array);
@@ -37,17 +14,17 @@ const shuffleArray = (array: Image[]) => {
 }
 
 const loadRandomImages = () => {
-  const randomFox = getRandomFox();
+  const randomFox = getRandomOnBoard();
 
   return Promise.all(
     defaultState.map(id => {
       if (id === randomFox) {
-        return fox();
+        return fetchFox();
       }
-      if (Boolean(Math.floor(Math.random() * 2))) {
-        return dog();
+      if (Boolean(getRandomBoolean())) {
+        return fetchDog();
       }
-      return cat();
+      return fetchCat();
     })
   )
 }
@@ -89,10 +66,10 @@ export default function useLoadImages() {
       return shuffleArray(images);
     }
 
-    // 1 - array of all images
-    // 2 - 2 array of (cats + dog) and (fox)
+    // 1 - array of all downloaded images
+    // 2 - two array of (cats + dog) and (fox)
     // 3 - get 8 numb of random and 1 in fox
-    // 4 - merge
+    // 4 - merge into next image set
     const nextImgSet = ([] as Image[]).concat(images, nextImages.filter((img) => (
       onloadImages.current[img.src]
     )));
@@ -109,28 +86,46 @@ export default function useLoadImages() {
       other: [] as Image[],
     });
 
-    if (other.length < 8) {
+    if ((other.length + fox.length) === 9) {
       return shuffleArray(images);
     }
 
-    const randomFox = getRandomFox();
     const uniqueIndexSet = new Set();
-    const foxIndex = Math.floor(Math.random() * (fox.length - 1));
 
-    while(uniqueIndexSet.size !== 8) {
-      const index = Math.floor(Math.random() * (other.length - 1));
-      uniqueIndexSet.add(index);
+    const currentFoxIndex = images.findIndex((img) => img.type === Type.fox);
+    const currentImageSource = images[currentFoxIndex].src;
+
+    let nextFoxPosition = getRandomOnBoard();
+    let nextFoxIndex = Math.floor(Math.random() * fox.length);
+    let nextFoxSource = fox[nextFoxIndex].src
+
+    while(
+      (uniqueIndexSet.size !== 8) ||
+      (currentFoxIndex === nextFoxPosition) ||
+      ((currentImageSource === nextFoxSource) && fox.length > 1)
+    ) {
+      if (uniqueIndexSet.size !== 8) {
+        uniqueIndexSet.add(
+          Math.floor(Math.random() * other.length)
+        );
+      }
+      if (currentFoxIndex === nextFoxPosition) {
+        nextFoxPosition = getRandomOnBoard();
+      }
+      if ((currentImageSource === nextFoxSource) && (fox.length > 1)) {
+        nextFoxIndex = Math.floor(Math.random() * fox.length);
+        nextFoxSource = fox[nextFoxIndex].src;
+      }
     }
 
-    const uniqVal = [...uniqueIndexSet];
+    const uniqVal = [...uniqueIndexSet] as number[];
     
     const nexSet = defaultState.reduce((acc, id) => {
-      if (id === randomFox) {
-        acc.push(fox[foxIndex]);
+      if (id === nextFoxPosition) {
+        acc.push(fox[nextFoxIndex]);
       }
 
       if (uniqVal[id] !== undefined) {
-        // @ts-ignore
         acc.push(other[uniqVal[id]]);
       }
 

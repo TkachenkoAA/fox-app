@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { routePath } from '../routePath';
 
 export default function NewGame() {
   const navigate = useNavigate();
+  const { state: historyState } = useLocation();
   const [state, setEditable] = useState({
     isEditable: true,
-    inputValue: ''
-  });
+    inputValue: historyState ? historyState.name : ''
+  })
 
   const handleInputBlur = (event: React.FocusEvent<HTMLInputElement>) => {
     event.preventDefault();
