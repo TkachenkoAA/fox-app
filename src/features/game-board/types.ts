@@ -6,7 +6,7 @@ export const Type = {
 } as const;
 
 export type Image = {
-  id: number;
+  id: string;
   src: string;
   type: keyof typeof Type
 };

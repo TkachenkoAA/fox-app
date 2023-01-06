@@ -1,5 +1,5 @@
 import React from 'react'
-import { Image } from './types'
+import { Image } from './types';
 
 type ImageProps = {
   images?: Image[];
@@ -10,10 +10,11 @@ export default function PreloadImages({ images, onLoad }: ImageProps) {
   if (!images) {
     return null;
   }
+
   return (
     <div className="board-preload">
       {images.map((image) => (
-        <img src={image.src} onLoad={() => onLoad(image.src)} alt="" />
+        <img key={image.id} src={image.src} onLoad={() => onLoad(image.src)} alt="" />
       ))}
     </div>
   )
