@@ -1,5 +1,5 @@
 import { v4 as uuidv4 } from 'uuid';
-import { Type, FoxImageRes, DogImageRes, CatImageRes } from '../../types';
+import { Type, FoxImageRes, DogImageRes, CatImageRes } from './types';
 
 const resToJson = (res: Response) => res.json();
 

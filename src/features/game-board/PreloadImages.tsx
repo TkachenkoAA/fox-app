@@ -1,5 +1,5 @@
 import React from 'react'
-import { Image } from '../../types';
+import { Image } from '../game-process/types';
 
 type ImageProps = {
   images?: Image[];

@@ -1,6 +1,6 @@
 import React from 'react';
 import ImageContainer from './ImageContainer';
-import { Image } from '../../types';
+import { Image } from '../game-process/types';
 
 type GameBoardProps = {
   images?: Image[];

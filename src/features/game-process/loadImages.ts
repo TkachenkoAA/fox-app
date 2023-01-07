@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Image, Type } from '../../types';
+import { Image, Type } from './types';
 import { fetchDog, fetchCat, fetchFox } from './fetchImageSources';
 import { defaultState, getRandomOnBoard, getRandomBoolean } from './utils';
 
